@@ -22,6 +22,7 @@ const campgroundRoutes = require('./routes/campgrounds.js')
 const reviewRoutes = require('./routes/reviews.js')
 
 const mongoSanitize = require('express-mongo-sanitize')
+
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
 
 // 'mongodb://127.0.0.1:27017/yelp-camp'
@@ -42,7 +43,9 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(mongoSanitize())
+app.use(mongoSanitize({
+    replaceWith: '_'
+}))
 
 const secret = process.env.SECRET || 'thisisthesecret78432'
 
@@ -158,6 +161,7 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err })
 })
 
-app.listen(3000, () => {
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
     console.log('serving on port 3000')
 })
